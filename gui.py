@@ -1,6 +1,6 @@
 import tkinter as tk
 from gol import GOL
-from brush import BaseBrush
+from brush import BaseBrush, GliderBrush, BlinkerBrush, PulsarBrush
 
 CELL_SIZE = 20
 GRID_WIDTH = 20
@@ -17,14 +17,31 @@ class GolGUI:
                                 width=GRID_WIDTH * CELL_SIZE, 
                                 height=GRID_HIGHT * CELL_SIZE, 
                                 bg="white")
-        self.canvas.pack()
+        self.canvas.grid(row= 1, column=0, columnspan=4)
         self.canvas.bind("<Button-1>", self.toggle_cell)
-        self.info_label = tk.Label(self.root, text="Generáció: 0 | Élő sejtek: 0")
-        self.info_label.pack()
+
+        button_frame = tk.Frame(self.root)
+        button_frame.grid(row=0, column=0, columnspan=4)
+
+        tk.Button(button_frame, text="Base", command=lambda: self.set_brush(BaseBrush())).grid(row= 0, column= 0)
+        tk.Button(button_frame, text="Glider", command=lambda: self.set_brush(GliderBrush())).grid(row= 0, column= 1)
+        tk.Button(button_frame, text="Blinker", command=lambda: self.set_brush(BlinkerBrush())).grid(row= 0, column= 2)
+        tk.Button(button_frame, text="Pulsar", command=lambda: self.set_brush(PulsarBrush())).grid(row= 0, column= 3)
+
         self.draw_grid()
-        self.start_button = tk.Button(self.root,text="Start",command=self.toggle_running)
-        self.start_button.pack()
+
+        button_frame2 = tk.Frame(self.root)
+        button_frame2.grid(row=3, column=0, columnspan=4)
+
+        self.step_button = tk.Button(button_frame2, text="Step", command=self.step)
+        self.step_button.grid(row= 3, column= 1)
+        self.start_button = tk.Button(button_frame2,text="Start",command=self.toggle_running)
+        self.start_button.grid(row= 3, column= 0)
+
         self.is_running = False
+        stats = self.game.get_statistics()
+        self.info_label = tk.Label(self.root, text=f"Generation: {stats['generation']} | Alive: {stats['alive']} | Dead: {stats['dead']}")
+        self.info_label.grid(row= 4, column= 0, columnspan=4)
         self.root.mainloop()
     
     def toggle_running(self):
@@ -60,24 +77,16 @@ class GolGUI:
                     (c+1)*CELL_SIZE,
                     (r+1)*CELL_SIZE,
                     fill=colour,
-                    outline="gray"
-                )
-
+                    outline="gray")
+                
 
     def update_info(self):
-        stats       = self.game.get_statistics()
-        generation  = stats["generation"]
-        alive_cells = stats["alive"]
-        dead_cells  = stats["dead"]
+        stats = self.game.get_statistics()
+        self.info_label.config(text=f"Generation: {stats['generation']} | Alive: {stats['alive']} | Dead: {stats['dead']}")
+    
 
-        self.info_label.config(
-            text=(
-                f"Generáció: {generation}   "
-                f"Élő sejtek: {alive_cells}   "
-                f"Halott sejtek: {dead_cells}"))
-            
-
-
+    def set_brush(self, brush):
+        self.brush = brush
 
 
 if __name__ == "__main__":
