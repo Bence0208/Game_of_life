@@ -88,7 +88,7 @@ class GolGUI:
     def set_brush(self, brush):
         self.brush = brush
 
-
 if __name__ == "__main__":
     gol = GOL(GRID_WIDTH, GRID_HIGHT)
     GolGUI(gol)
+
