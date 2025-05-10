@@ -42,6 +42,44 @@ class PulsarBrush(Brush):
         for dr, dc in pattern:
             gol.set_cell(row + dr, col + dc)
 
+class Lwss(Brush):
+    def apply(self, gol, row, col):
+        pattern = [
+    (0, 1), (0, 2), (0, 3),(0, 4),
+    (1, 0), (1, 4),
+    (2, 4),
+    (3, 0), (3, 3)
+        ]       
+        for dr, dc in pattern:
+            gol.set_cell(row + dr, col + dc)
+
+
+class Mwss(Brush):
+    def apply(self, gol, row, col):
+        pattern = mwss = [
+    (0, 1), (0, 2), (0, 3), (0, 4), (0, 5),
+    (1, 0), (1, 5),
+    (2, 5),
+    (3, 0), (3, 4)
+        ]
+        for dr, dc in pattern:
+            gol.set_cell(row + dr, col + dc)
+
+
+class Hwss(Brush):
+    def apply(self, gol, row, col):
+        pattern = [
+    (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6),
+    (1, 0), (1, 6),
+    (2, 6),
+    (3, 0), (3, 5)
+        ]
+        for dr, dc in pattern:
+            gol.set_cell(row + dr, col + dc)
+
+
+
+
 if __name__ == "__main__":
     gol = GOL(20,20)
     brush = PulsarBrush()
