@@ -14,13 +14,20 @@ class GOL:
             outstring += "\n"
         return outstring
     
+    
     def set_cell(self, row, col):
         if row >= 0 and row < self.rows and col >= 0 and col < self.cols:
             self.back_states.append(self.board)
             if len(self.back_states) > 5:
                 self.back_states.pop(0)
             self.board[row][col] = (self.board[row][col] + 1) % 2
-        
+
+    def set_barricade(self, row, col):
+        if row >= 0 and row < self.rows and col >= 0 and col < self.cols:
+            self.board[row][col] = -((self.board[row][col] - 1) % 2)
+
+
+
     def next_state(self):
         next_board = [[0 for _ in range(self.cols)] for _ in range(self.rows)]
         direction = [(-1,-1), (-1,0), (-1,1),
@@ -29,9 +36,12 @@ class GOL:
         for r in range(self.rows):
             for c in range(self.cols):
                 live_cells = 0
+                if self.board[r][c] == -1:
+                    next_board[r][c] = -1
+                    continue
                 for dr,dc in direction:
                     nr, nc = r + dr, c + dc
-                    if nr >= 0 and nr < self.rows and nc >= 0 and nc < self.cols:
+                    if nr >= 0 and nr < self.rows and nc >= 0 and nc < self.cols and self.board[nr][nc] != -1:
                         live_cells += self.board[nr][nc]
                 # underpopulation
                 if self.board[r][c] == 1 and live_cells < 2:
