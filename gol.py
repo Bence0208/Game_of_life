@@ -4,7 +4,8 @@ class GOL:
         self.rows = rows
         self.generations = 0
         self.board = [[0 for _ in range(cols)] for _ in range(rows)]
-    
+        self.back_states = []
+        
     def __str__(self):
         outstring = ""
         for rows in self.board:
@@ -15,8 +16,11 @@ class GOL:
     
     def set_cell(self, row, col):
         if row >= 0 and row < self.rows and col >= 0 and col < self.cols:
+            self.back_states.append(self.board)
+            if len(self.back_states) > 5:
+                self.back_states.pop(0)
             self.board[row][col] = (self.board[row][col] + 1) % 2
-    
+        
     def next_state(self):
         next_board = [[0 for _ in range(self.cols)] for _ in range(self.rows)]
         direction = [(-1,-1), (-1,0), (-1,1),
@@ -41,6 +45,9 @@ class GOL:
                 # reproduction
                 if self.board[r][c] == 0 and live_cells == 3:
                     next_board[r][c] = 1
+        self.back_states.append(self.board)
+        if len(self.back_states) > 5:
+            self.back_states.pop(0)
         self.board = next_board
         self.generations += 1
 
@@ -51,12 +58,19 @@ class GOL:
                 "alive"      : alive,
                 "dead"       : dead,
                 "generation" : self.generations
-               }    
-            
+               }
+    
+    def back_step(self):
+        self.board = self.back_states.pop()
+        if self.generations > 0:
+            self.generations -= 1
+
+        
 
 
 if __name__ == "__main__":
     gol = GOL(5,5)
+    """
     print(gol.cols)
     print(gol.rows)
     print(gol.generations)
@@ -76,48 +90,15 @@ if __name__ == "__main__":
     print(gol.get_statistics())
     gol.next_state()
     print(gol)
-    print(gol.get_statistics())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    gol = GOL(5,5)
-    print(gol.cols)
-    print(gol.rows)
-    print(gol.generations)
-    print(gol)
-    print(gol.get_statistics())
+    print(gol.get_statistics())"""
     gol.set_cell(2,1)
     gol.set_cell(2,2)
     gol.set_cell(2,3)
     print(gol)
-    print(gol.get_statistics())
     gol.next_state()
     print(gol)
-    print(gol.get_statistics())
-    print(gol.generations)
     gol.next_state()
     print(gol)
-    print(gol.get_statistics())
-    gol.next_state()
+    gol.back_step()
+    gol.back_step()
     print(gol)
-    print(gol.get_statistics())

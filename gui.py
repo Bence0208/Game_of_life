@@ -37,6 +37,8 @@ class GolGUI:
         self.step_button.grid(row= 3, column= 1)
         self.start_button = tk.Button(button_frame2,text="Start",command=self.toggle_running)
         self.start_button.grid(row= 3, column= 0)
+        self.step_back_button = tk.Button(button_frame2,text="Step back",command=self.set_stepback)
+        self.step_back_button.grid(row= 3, column= 2)
 
         self.is_running = False
         stats = self.game.get_statistics()
@@ -87,6 +89,14 @@ class GolGUI:
 
     def set_brush(self, brush):
         self.brush = brush
+
+
+    def set_stepback(self):
+        if len(self.game.back_states) > 0:
+            self.game.back_step()
+            self.draw_grid()
+            self.update_info()
+
 
 if __name__ == "__main__":
     gol = GOL(GRID_WIDTH, GRID_HIGHT)
